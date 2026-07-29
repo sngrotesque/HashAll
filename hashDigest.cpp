@@ -10,8 +10,6 @@
 
 #include <iostream>
 
-using u8 = uint8_t;
-
 #if defined(_WIN64) || defined(_MSC_VER)
 #    include <Windows.h>
 #    pragma comment(lib, "libcrypto")
@@ -19,11 +17,14 @@ using u8 = uint8_t;
 #    define HASHALL_CPP _MSVC_LANG
 #else
 #    define HASHALL_CPP __cplusplus
+using BYTE = uint8_t;
 #endif
 
 #if HASHALL_CPP >= 202002L
 #    include <format>
 #endif
+
+namespace fs = std::filesystem;
 
 class Hashlib {
 private:
@@ -85,18 +86,10 @@ static std::string to_hex(const std::string &data)
     return result;
 }
 
-static std::string WcharToChar(std::wstring wstr)
-{
-    int len = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), -1, nullptr, 0, nullptr, nullptr);
-    std::string str(len, '\0');
-
-    WideCharToMultiByte(CP_UTF8, 0, wstr.data(), -1, str.data(), len, nullptr, nullptr);
-    return str;
-}
-
 int main(int argc, char **argv)
 {
     if (argc < 3) {
+#       if HASHALL_CPP >= 202002L
         std::cerr << std::format(
             "Usage: {0} <algorithm/all> <file_path>\n"
             "\tAuthor: SN-Grotesque (github: sngrotesque)\n"
@@ -106,16 +99,32 @@ int main(int argc, char **argv)
             "\t         {0} all C:\\Windows\\explorer.exe\n",
             argv[0]
         );
+#       else
+        std::cerr << \
+            "Usage: " << argv[0] << " <algorithm/all> <file_path>\n"
+            "\tAuthor: SN-Grotesque (github: sngrotesque)\n"
+            "\tParam: <algorithm>: The name of the hash algorithm (e.g., md5, sha256), other: all\n"
+            "\tParam: <file_path>: The path to the file to be hashed\n"
+            "\tExample: " << argv[0] << " sha256 C:\\Windows\\explorer.exe\n"
+            "\t         " << argv[0] << " all C:\\Windows\\explorer.exe\n";
+#       endif
         return 1;
     }
 
-    std::string algo = argv[1];
+    std::string algo(argv[1]);
     std::transform(algo.begin(), algo.end(), algo.begin(), [](BYTE c) {
         return std::tolower(c);
     });
-    std::filesystem::path path(argv[2]);
-    std::string filenameStr =
-        WcharToChar(path.wstring());  // 统一转换为 UTF-8 字符串，避免输出乱码
+
+    fs::path path(argv[2]);
+    std::string filenameStr = path.string();
+    if (!fs::exists(path)) {
+#       if HASHALL_CPP >= 202002L
+        std::cerr << std::format("Path {} not found.\n", filenameStr);
+#       else
+        std::cerr << "Path " << filenameStr << " not found.\n";
+#       endif
+    }
 
     // 处理 "all" 选项
     if (algo == "all") {
@@ -144,7 +153,11 @@ int main(int argc, char **argv)
 
             std::ifstream file(path, std::ios::binary);
             if (!file.is_open()) {
+#               if HASHALL_CPP >= 202002L
                 std::cerr << std::format("Cannot open file: {}\n", filenameStr);
+#               else
+                std::cerr << "Cannot open file: " << filenameStr << "\n";
+#               endif
                 return 1;
             }
 
@@ -154,9 +167,17 @@ int main(int argc, char **argv)
                 hasher.update(reinterpret_cast<BYTE *>(buffer), file.gcount());
             }
 
+#           if HASHALL_CPP >= 202002L
             std::cout << std::format(
                 "{0:<10} {1:<128} {2}\n", name, hasher.hexdigest(), filenameStr
             );
+#           else
+            std::cout << std::left
+                << std::setw(10) << name
+                << std::setw(128) << digest
+                << filename
+                << '\n';
+#           endif
         }
         return 0;
     }
@@ -164,13 +185,21 @@ int main(int argc, char **argv)
     // 单个算法模式
     const EVP_MD *md = EVP_get_digestbyname(algo.c_str());
     if (!md) {
+#       if HASHALL_CPP >= 202002L
         std::cerr << std::format("Unknown algorithm: {}\n", algo);
+#       else
+        std::cerr << "Unknown algorithm: " << algo << "\n";
+#       endif
         return 1;
     }
 
     std::ifstream file(path, std::ios::binary);
     if (!file.is_open()) {
+#       if HASHALL_CPP >= 202002L
         std::cerr << std::format("Cannot open file: {}\n", filenameStr);
+#       else
+        std::cerr << "Cannot open file: " << filenameStr << "\n";
+#       endif
         return 1;
     }
 
@@ -180,6 +209,10 @@ int main(int argc, char **argv)
         hasher.update(reinterpret_cast<BYTE *>(buffer), file.gcount());
     }
 
+#   if HASHALL_CPP >= 202002L
     std::cout << std::format("{} {}\n", hasher.hexdigest(), filenameStr);
+#   else
+    std::cout << hasher.hexdigest() << " " << filenameStr << "\n";
+#   endif
     return 0;
 }
