@@ -5,18 +5,18 @@
 # 示例
 
 ```bash
-C:\Users\sn\Desktop>hashdigest
-Usage: hashdigest <algorithm/all> <file_path>
+C:\Users\sn\Desktop>hashall
+Usage: hashall <algorithm/all> <file_path>
         Author: SN-Grotesque (github: sngrotesque)
         Param: <algorithm>: The name of the hash algorithm (e.g., md5, sha256), other: all
         Param: <file_path>: The path to the file to be hashed
-        Example: hashdigest sha256 C:\Windows\explorer.exe
-                 hashdigest all C:\Windows\explorer.exe
+        Example: hashall sha256 C:\Windows\explorer.exe
+                 hashall all C:\Windows\explorer.exe
 
-C:\Users\sn\Desktop>hashdigest sha256 pixiv.txt
+C:\Users\sn\Desktop>hashall sha256 pixiv.txt
 e8aade4183b04d2a53169fdfcd6f5529a69126ad85aba0713a05008289f2c4e4 pixiv.txt
 
-C:\Users\sn\Desktop>hashdigest all pixiv.txt
+C:\Users\sn\Desktop>hashall all pixiv.txt
 md5        4b028a0bd34263b4bc15c03d5a92e2a1                                                                                                 pixiv.txt
 sha1       50e62fdbe596e0d4a1adb8df639cafa8a998e43e                                                                                         pixiv.txt
 sha224     4074380e8a97b9079b0a4904aef5cc671b3469391b66eaae3256c644                                                                         pixiv.txt

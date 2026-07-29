@@ -26,6 +26,8 @@ using BYTE = uint8_t;
 
 namespace fs = std::filesystem;
 
+constexpr size_t CHUNK_SIZE = 16777216ULL; // 以 16MB 为一个块读取
+
 class Hashlib {
 private:
     const EVP_MD *md = nullptr;
@@ -148,6 +150,11 @@ int main(int argc, char **argv)
         for (const auto &name : allAlgos) {
             const EVP_MD *md = EVP_get_digestbyname(name.c_str());
             if (!md) {
+#               if HASHALL_CPP >= 202002L
+                std::cerr << std::format("Skipping unsupported: {}\n", name);
+#               else
+                std::cerr << "Skipping unsupported: " << name << "\n";
+#               endif
                 continue;  // 跳过当前 OpenSSL 不支持的算法
             }
 
@@ -162,7 +169,7 @@ int main(int argc, char **argv)
             }
 
             Hashlib hasher(md);
-            char buffer[8192];
+            char buffer[CHUNK_SIZE];
             while (file.read(buffer, sizeof(buffer)) || (file.gcount() > 0)) {
                 hasher.update(reinterpret_cast<BYTE *>(buffer), file.gcount());
             }
@@ -174,8 +181,8 @@ int main(int argc, char **argv)
 #           else
             std::cout << std::left
                 << std::setw(10) << name
-                << std::setw(128) << digest
-                << filename
+                << std::setw(128) << hasher.hexdigest()
+                << filenameStr
                 << '\n';
 #           endif
         }
