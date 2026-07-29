@@ -26,7 +26,7 @@ using BYTE = uint8_t;
 
 namespace fs = std::filesystem;
 
-constexpr size_t CHUNK_SIZE = 16777216ULL; // 以 16MB 为一个块读取
+constexpr size_t CHUNK_SIZE = 16777216ULL; // Read in blocks of 16MB
 
 class Hashlib {
 private:
@@ -128,19 +128,19 @@ int main(int argc, char **argv)
 #       endif
     }
 
-    // 处理 "all" 选项
     if (algo == "all") {
-        // 使用主要的哈希算法列表，去掉一些可能出错或不支持的算法。
+        // Using a list of major hash algorithms, remove some algorithms that may be
+        // incorrect or unsupported.
         const std::vector<std::string> allAlgos = {
             "md5",
             "sha1",
             "sha224",
             "sha3-224",
-            // "sha512-224", // 有点阴间，去掉。
+            // "sha512-224", // It's a bit eerie, let's remove it.
             "sm3",
             "sha256",
             "sha3-256",
-            // "sha512-256", // 有点阴间，去掉。
+            // "sha512-256", // It's a bit eerie, let's remove it.
             "sha384",
             "sha3-384",
             "sha512",
@@ -158,12 +158,13 @@ int main(int argc, char **argv)
         for (const auto &name : allAlgos) {
             const EVP_MD *md = EVP_get_digestbyname(name.c_str());
             if (!md) {
+                // Skip algorithms not supported by OpenSSL currently
 #               if HASHALL_CPP >= 202002L
                 std::cerr << std::format("Skipping unsupported: {}\n", name);
 #               else
                 std::cerr << "Skipping unsupported: " << name << "\n";
 #               endif
-                continue;  // 跳过当前 OpenSSL 不支持的算法
+                continue;
             }
 
             std::ifstream file(path, std::ios::binary);
@@ -187,7 +188,8 @@ int main(int argc, char **argv)
                 "{0:<10} {1:<128} {2}\n", name, hasher.hexdigest(), filenameStr
             );
 #           else
-            std::cout << std::left
+            std::cout \
+                << std::left
                 << std::setw(10) << name
                 << std::setw(128) << hasher.hexdigest()
                 << filenameStr
@@ -198,7 +200,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    // 单个算法模式
+    // Single algorithm
     const EVP_MD *md = EVP_get_digestbyname(algo.c_str());
     if (!md) {
 #       if HASHALL_CPP >= 202002L
