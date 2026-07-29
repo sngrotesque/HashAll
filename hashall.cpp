@@ -147,6 +147,14 @@ int main(int argc, char **argv)
             "sha3-512",
         };
 
+        char *buffer = nullptr;
+        try {
+            buffer = new char[CHUNK_SIZE];
+        } catch (const std::exception &e) {
+            std::cerr << e.what() << std::endl;
+            return 1;
+        }
+
         for (const auto &name : allAlgos) {
             const EVP_MD *md = EVP_get_digestbyname(name.c_str());
             if (!md) {
@@ -165,11 +173,11 @@ int main(int argc, char **argv)
 #               else
                 std::cerr << "Cannot open file: " << filenameStr << "\n";
 #               endif
+                delete[] buffer;
                 return 1;
             }
 
             Hashlib hasher(md);
-            char buffer[CHUNK_SIZE];
             while (file.read(buffer, sizeof(buffer)) || (file.gcount() > 0)) {
                 hasher.update(reinterpret_cast<BYTE *>(buffer), file.gcount());
             }
@@ -186,6 +194,7 @@ int main(int argc, char **argv)
                 << '\n';
 #           endif
         }
+        delete[] buffer;
         return 0;
     }
 
