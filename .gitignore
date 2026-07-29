@@ -1,0 +1,6 @@
+.vs/
+.vscode/
+build/
+*.sln
+*.*proj*
+*.user
