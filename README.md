@@ -1,8 +1,8 @@
 # HashAll
 
-用于替代 xxx-sum 的文件哈希工具。
+A file hash tool used as a replacement for xxx-sum.
 
-# 编译
+# Compile
 
 ### Windows
 
@@ -16,13 +16,13 @@ set ssl_lib=""
 cl hashall.cpp /I %ssl_incl% /EHsc /std:c++20 /link /LIBPATH:%ssl_lib% libcrypto.lib libssl.lib
 ```
 
-### Linux
+### Other (Linux, Mac OS, Android Termux...)
 
 ```bash
 g++ hashall.cpp --std=c++20 -lssl -lcrypto -o hashall
 ```
 
-# 示例
+# Example
 
 ```bash
 C:\Users\sn\Desktop>hashall
