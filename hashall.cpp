@@ -33,6 +33,24 @@ private:
     const EVP_MD *md = nullptr;
     EVP_MD_CTX *ctx = nullptr;
 
+private:
+    std::string to_hex(const std::string &data) const noexcept
+    {
+        auto to_char = [](BYTE c) {
+            return (c + 0x57) - (-(c < 0xa) & 0x27);
+        };
+
+        size_t old_length = data.size();
+        std::string result(old_length * 2, '\0');
+
+        for (size_t i = 0; i < old_length; ++i) {
+            result[i * 2] = to_char(static_cast<BYTE>(data[i]) >> 4);
+            result[i * 2 + 1] = to_char(static_cast<BYTE>(data[i]) & 0xf);
+        }
+
+        return result;
+    }
+
 public:
     Hashlib(const EVP_MD *algo)
     {
@@ -66,27 +84,9 @@ public:
     std::string hexdigest() const noexcept
     {
         std::string _digest = this->digest();
-        return to_hex(_digest);
+        return this->to_hex(_digest);
     }
 };
-
-static inline BYTE to_char(BYTE c)
-{
-    return (c + 0x57) - (-(c < 0xa) & 0x27);
-}
-
-static std::string to_hex(const std::string &data)
-{
-    size_t old_length = data.size();
-    std::string result(old_length * 2, '\0');
-
-    for (size_t i = 0; i < old_length; ++i) {
-        result[i * 2] = to_char(static_cast<BYTE>(data[i]) >> 4);
-        result[i * 2 + 1] = to_char(static_cast<BYTE>(data[i]) & 0xf);
-    }
-
-    return result;
-}
 
 int main(int argc, char **argv)
 {
