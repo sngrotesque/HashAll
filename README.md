@@ -25,27 +25,33 @@ g++ hashall.cpp --std=c++20 -lssl -lcrypto -o hashall
 # Example
 
 ```bash
-C:\Users\sn\Desktop>hashall
-Usage: hashall <algorithm/all> <file_path>
+C:\Users\sn>hashall -h
+Usage: hashall <algorithm> <file_path>
         Author: SN-Grotesque (github: sngrotesque)
         Param: <algorithm>: The name of the hash algorithm (e.g., md5, sha256), other: all
         Param: <file_path>: The path to the file to be hashed
         Example: hashall sha256 C:\Windows\explorer.exe
                  hashall all C:\Windows\explorer.exe
 
-C:\Users\sn\Desktop>hashall sha256 pixiv.txt
-e8aade4183b04d2a53169fdfcd6f5529a69126ad85aba0713a05008289f2c4e4 pixiv.txt
+C:\Users\sn>hashall all "F:\Pitchers\bg.jpg"
+length   797776 Bytes, 779.08 KB, 0.76 MB
+md5      [c355a5c6f3ef333c90d48d02c369dc5a] F:\Pitchers\bg.jpg
+sha1     [c65fac72aa1001913500ad3b53c965e7d538d48e] F:\Pitchers\bg.jpg
+sha224   [e5a377bfd0bfdcb5683590255af6b62069146285a539321c95c4a67d] F:\Pitchers\bg.jpg
+sha3-224 [bd07ed396f8739bd20efc061f2bf053f7406b4a8f229043a5fb6677b] F:\Pitchers\bg.jpg
+sm3      [439874a1e925a644c6f505f7cc7106d0de21f7886782bf3be53cbbf9ca6e70a0] F:\Pitchers\bg.jpg
+sha256   [a40e9781d067f6ed551e5a175fe70544a9cfbee9985f08f7c97bb383effe8a21] F:\Pitchers\bg.jpg
+sha3-256 [c499636601236ed7991bbe1bf47474c231db26560cd06f9705c23330f77bbb36] F:\Pitchers\bg.jpg
+sha384   [ee8309b27d579ab8d4f21af90c539ff9c227db2e65d2edcffa546abff6188dfd84850ae53acffb94012b6854ab71d301] F:\Pitchers\bg.jpg
+sha3-384 [20851a7ceafa41f60e72ea8c301031ce16de0666ce97011ac8e421f0286c39c31b4f703d2ad45668f1398a7f4c2a27c1] F:\Pitchers\bg.jpg
+sha512   [dc93011c422a25c6f63d309dfdfad5af16fc5729db3701aed20b4e237eb75146cde3d0a045ca8fa056d1e23a0eb728fc187e215d8a4e2b40d309237c525f24dc] F:\Pitchers\bg.jpg
+sha3-512 [b6586d35e67bd77f06e5064f1fdbeb9747495b58dc20537c52f9b2b2d827f53c93f935ad4b5d35a02a3d1daf1e8b9a8aaf8d9c14fcadf5431e8bb656259e5350] F:\Pitchers\bg.jpg
 
-C:\Users\sn\Desktop>hashall all pixiv.txt
-md5        4b028a0bd34263b4bc15c03d5a92e2a1                                                                                                 pixiv.txt
-sha1       50e62fdbe596e0d4a1adb8df639cafa8a998e43e                                                                                         pixiv.txt
-sha224     4074380e8a97b9079b0a4904aef5cc671b3469391b66eaae3256c644                                                                         pixiv.txt
-sha3-224   1735957a7f68e9c7b755b45bf9d0923a0d5f05bc531a8f999ea2822a                                                                         pixiv.txt
-sm3        e456b26d78fe1946a8a04e78554bb9f846627d7c1d74edaf2adea336d0e4e1f6                                                                 pixiv.txt
-sha256     e8aade4183b04d2a53169fdfcd6f5529a69126ad85aba0713a05008289f2c4e4                                                                 pixiv.txt
-sha3-256   4540c424d5d883423e7844032d4abdbd073c66c07b3f0f8193b7fb3dc5964300                                                                 pixiv.txt
-sha384     58ef012c98bbf5ba515f22926cf3030b2adc907680608d924eec8858c7a43bea6ce5937f7e4d70560ce4200de316f65e                                 pixiv.txt
-sha3-384   6bd2ac66887341a32ae6b1f55f41bd1c6605bf31569c8a6fcaa79c8171fc7124416078c5fbacabe7014b58904b536c3d                                 pixiv.txt
-sha512     e847f76ff36c3d6cf40345e3e700698a4bb9bd4013391bb7f4a0f57fdf2ddb1b09601afe79b7fd9d4a7f038827a3e30560306c75fabd3417e7da216fe1240339 pixiv.txt
-sha3-512   b88a31269e345c7f6b6539d21e7061bb9867a43c23ae0354c6fece14d3fb396c8190b40ebcb49714e628208116e6a544f3c13428f93fdfb2f021fd1a19a7175b pixiv.txt
+C:\Users\sn>hashall sha256 "F:\Pitchers\bg.jpg"
+length   797776 Bytes, 779.08 KB, 0.76 MB
+sha256   [a40e9781d067f6ed551e5a175fe70544a9cfbee9985f08f7c97bb383effe8a21] F:\Pitchers\bg.jpg
+
+C:\Users\sn>hashall sha1 "F:\Pitchers\bg.jpg"
+length   797776 Bytes, 779.08 KB, 0.76 MB
+sha1     [c65fac72aa1001913500ad3b53c965e7d538d48e] F:\Pitchers\bg.jpg
 ```
